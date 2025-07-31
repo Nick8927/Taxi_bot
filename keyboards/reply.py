@@ -21,3 +21,12 @@ def reply_admin_menu():
     builder.button(text="⬅️ Назад")
     builder.adjust(1, 1, 2, 1)
     return builder.as_markup(resize_keyboard=True)
+
+
+def income_menu():
+    """клавиатура для оплаты заказа"""
+    builder = ReplyKeyboardBuilder()
+    builder.button(text="Оплата за заказ")
+    builder.button(text="Доплата по заказу")
+    builder.adjust(1, 1)
+    return builder.as_markup(resize_keyboard=True)
