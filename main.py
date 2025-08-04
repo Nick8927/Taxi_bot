@@ -2,15 +2,17 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
 from handlers import h1_start
-from handlers.drivers import h2_income, h3_expense
+from handlers.admin import h1_summary
+from handlers.drivers import h1_income, h2_expense
 
 
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 dp.include_router(h1_start.router)
-dp.include_router(h2_income.router)
-dp.include_router(h3_expense.router)
+dp.include_router(h1_income.router)
+dp.include_router(h2_expense.router)
+dp.include_router(h1_summary.router)
 
 
 async def main():
