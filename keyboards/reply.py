@@ -30,3 +30,13 @@ def income_menu():
     builder.button(text="Доплата по заказу")
     builder.adjust(1, 1)
     return builder.as_markup(resize_keyboard=True)
+
+
+def reply_report_menu():
+    """клавиатура для отчёта водителя"""
+    builder = ReplyKeyboardBuilder()
+    builder.button(text="📅 Текущий день")
+    builder.button(text="🗓 За месяц")
+    builder.button(text="⬅️ Назад")
+    builder.adjust(1, 1, 1)
+    return builder.as_markup(resize_keyboard=True)
