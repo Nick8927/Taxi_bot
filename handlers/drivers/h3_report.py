@@ -8,6 +8,22 @@ from services.google_sheets import get_records_by_day, get_records_by_month
 
 router = Router()
 
+MONTHS_RU = {
+    1: "Январь",
+    2: "Февраль",
+    3: "Март",
+    4: "Апрель",
+    5: "Май",
+    6: "Июнь",
+    7: "Июль",
+    8: "Август",
+    9: "Сентябрь",
+    10: "Октябрь",
+    11: "Ноябрь",
+    12: "Декабрь"
+}
+
+
 @router.message(F.text == "📊 Отчёт")
 async def handle_report_menu(message: Message, state: FSMContext):
     """обработка нажатия на кнопку "Отчёт. /
@@ -73,7 +89,7 @@ async def handle_month_report(message: Message):
     total_expense = sum(float(r[4]) for r in records if r[2].lower() == "расход")
 
     await message.answer(
-        f"🗓 Отчёт за {now.strftime('%B %Y')}:\n"
+        f"🗓 Отчёт за {MONTHS_RU[now.month]} {now.year}:\n"
         f"Доход: {total_income:.2f} ₽\n"
         f"Расход: {total_expense:.2f} ₽\n"
         f"Разница: {total_income - total_expense:.2f} ₽"
