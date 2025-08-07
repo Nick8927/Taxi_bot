@@ -19,7 +19,7 @@ spreadsheet = client.open(SPREADSHEET_NAME)
 sheet = spreadsheet.sheet1
 
 
-def add_record(record_type: str, category: str, amount: float, comment: str, telegram_id: int, name: str):
+def add_record(record_type: str, subcategory: str, amount: float, comment: str, user_id: int, username: str):
     """Добавление записи в таблицу, согласно полям в таблице"""
 
     now = datetime.now()
@@ -27,10 +27,10 @@ def add_record(record_type: str, category: str, amount: float, comment: str, tel
         now.strftime('%d.%m.%Y'),
         now.strftime('%H:%M:%S'),
         record_type,
-        category,
+        subcategory,
         amount,
         comment,
-        telegram_id,
-        name
+        user_id,
+        username
     ]
     sheet.append_row(row, value_input_option="USER_ENTERED")
