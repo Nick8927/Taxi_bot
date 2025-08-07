@@ -3,6 +3,8 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+from services.google_sheets import add_record
+
 
 router = Router()
 
@@ -29,11 +31,22 @@ async def expense_received(message: Message, state: FSMContext):
     text = message.text.strip()
     parts = text.split(" ", 1)
 
+
     try:
         amount = float(parts[0].replace(",", "."))
         comment = parts[1] if len(parts) > 1 else ""
 
+        add_record(
+            user_id=message.from_user.id,
+            username=message.from_user.full_name,
+            record_type='расход',
+            subcategory="-",
+            amount=amount,
+            comment=comment
+        )
+
         await message.answer(f"✅ Расход сохранён:\nСумма: {amount}\nКомментарий: {comment}")
         await state.clear()
+
     except ValueError:
         await message.answer("❌ Неверный формат. Повторите ввод: `150 мойка машины`")
