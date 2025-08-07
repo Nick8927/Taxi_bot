@@ -42,7 +42,7 @@ async def ask_income_comment(message: Message, state: FSMContext):
         return
 
     await state.update_data(amount=amount)
-    await message.answer("Добавьте комментарий (например, адрес, заказ № и т.д.):")
+    await message.answer("Добавьте комментарий (например адрес: Гоголя 17)")
     await state.set_state(IncomeStates.waiting_for_comment)
 
 
