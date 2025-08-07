@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from datetime import datetime
 
 from keyboards.reply import reply_report_menu, reply_drive_menu
-from services.google_sheets import get_records_by_day
+from services.google_sheets import get_records_by_day, get_records_by_month
 
 router = Router()
 
@@ -59,9 +59,25 @@ async def handle_today_report(message: Message):
 
 @router.message(F.text == "🗓 За месяц")
 async def handle_month_report(message: Message):
-    """отчет за месяц"""
-    # TODO: позже добавлю Google Sheets
-    await message.answer("🗓 Отчёт за месяц:\n(данные появятся позже)")
+    """отчёт за текущий месяц"""
+    now = datetime.now()
+    user_id = message.from_user.id
+
+    records = get_records_by_month(user_id=user_id, month=now.month, year=now.year)
+
+    if not records:
+        await message.answer("🗓 За этот месяц записей не найдено.")
+        return
+
+    total_income = sum(float(r[4]) for r in records if r[2].lower() == "доход")
+    total_expense = sum(float(r[4]) for r in records if r[2].lower() == "расход")
+
+    await message.answer(
+        f"🗓 Отчёт за {now.strftime('%B %Y')}:\n"
+        f"Доход: {total_income:.2f} ₽\n"
+        f"Расход: {total_expense:.2f} ₽\n"
+        f"Разница: {total_income - total_expense:.2f} ₽"
+    )
 
 
 @router.message(F.text == "⬅️ Назад")

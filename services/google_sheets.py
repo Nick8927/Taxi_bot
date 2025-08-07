@@ -48,3 +48,20 @@ def get_records_by_day(user_id: int, date: str):
             filtered.append(row)
 
     return filtered
+
+
+def get_records_by_month(user_id: int, month: int, year: int):
+    """Получение всех записей по user_id за указанный месяц и год"""
+    rows = sheet.get_all_values()[1:]
+    filtered = []
+
+    for row in rows:
+        try:
+            row_date = datetime.strptime(row[0], "%d.%m.%Y")
+            row_user_id = row[6]
+            if row_date.month == month and row_date.year == year and str(user_id) == row_user_id:
+                filtered.append(row)
+        except (ValueError, IndexError):
+            continue
+
+    return filtered
