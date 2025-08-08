@@ -1,3 +1,4 @@
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -40,3 +41,16 @@ def reply_report_menu():
     builder.button(text="⬅️ Назад")
     builder.adjust(1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
+
+
+def reply_admin_report_menu():
+    """клавиатура для отчёта админа за определённый период"""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="📅 Сегодня")],
+            [KeyboardButton(text="🗓 Этот месяц")],
+            [KeyboardButton(text="♾ Всё время")],
+            [KeyboardButton(text="⬅️ Назад")],
+        ],
+        resize_keyboard=True
+    )
