@@ -65,3 +65,98 @@ def get_records_by_month(user_id: int, month: int, year: int):
             continue
 
     return filtered
+
+
+def get_full_report():
+    """Возвращает общий и пользовательский отчёт за всё время"""
+    records = sheet.get_all_values()[1:]
+
+    total_income = 0
+    total_expense = 0
+    user_stats = {}
+
+    for row in records:
+        try:
+            record_type = row[2].strip().lower()
+            amount = float(row[4])
+            username = row[7] if len(row) > 7 and row[7] else "Без имени"
+        except (IndexError, ValueError):
+            continue
+
+        if username not in user_stats:
+            user_stats[username] = {"income": 0, "expense": 0}
+
+        if record_type == "доход":
+            total_income += amount
+            user_stats[username]["income"] += amount
+        elif record_type == "расход":
+            total_expense += amount
+            user_stats[username]["expense"] += amount
+
+    total_diff = total_income - total_expense
+
+    for username, stats in user_stats.items():
+        stats["diff"] = stats["income"] - stats["expense"]
+
+    return {
+        "total": {
+            "income": total_income,
+            "expense": total_expense,
+            "diff": total_diff
+        },
+        "users": user_stats
+    }
+
+
+def get_admin_summary(period: str):
+    """Возвращает сводный отчёт по всем пользователям за разные периоды"""
+    records = sheet.get_all_values()
+    header = records[0]
+    rows = records[1:]
+
+    today_str = datetime.now().strftime("%d.%m.%Y")
+    month_str = datetime.now().strftime("%m.%Y")
+
+    summary = {}
+
+    for row in rows:
+        if len(row) < 8:
+            continue
+
+        date, _, record_type, _, amount, _, user_id, username = row
+
+        if period == "day" and date != today_str:
+            continue
+        if period == "month" and not date.endswith(month_str):
+            continue
+
+        try:
+            amount = float(amount)
+        except ValueError:
+            continue
+
+        if username not in summary:
+            summary[username] = {"income": 0, "expense": 0}
+
+        if record_type.lower() == "доход":
+            summary[username]["income"] += amount
+        elif record_type.lower() == "расход":
+            summary[username]["expense"] += amount
+
+    lines = []
+    total_income = 0
+    total_expense = 0
+
+    for user, data in summary.items():
+        lines.append(
+            f"👤 {user} — Доход: {data['income']:.2f} ₽, Расход: {data['expense']:.2f} ₽"
+        )
+        total_income += data["income"]
+        total_expense += data["expense"]
+
+    lines.append("\n💰 Общий итог:")
+    lines.append(f"Доход: {total_income:.2f} ₽")
+    lines.append(f"Расход: {total_expense:.2f} ₽")
+    lines.append(f"Разница: {total_income - total_expense:.2f} ₽")
+
+    return "\n".join(lines) if lines else "Нет данных за выбранный период."
