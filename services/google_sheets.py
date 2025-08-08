@@ -65,3 +65,44 @@ def get_records_by_month(user_id: int, month: int, year: int):
             continue
 
     return filtered
+
+
+def get_full_report():
+    """Возвращает общий и пользовательский отчёт за всё время"""
+    records = sheet.get_all_values()[1:]
+
+    total_income = 0
+    total_expense = 0
+    user_stats = {}
+
+    for row in records:
+        try:
+            record_type = row[2].strip().lower()
+            amount = float(row[4])
+            username = row[7] if len(row) > 7 and row[7] else "Без имени"
+        except (IndexError, ValueError):
+            continue
+
+        if username not in user_stats:
+            user_stats[username] = {"income": 0, "expense": 0}
+
+        if record_type == "доход":
+            total_income += amount
+            user_stats[username]["income"] += amount
+        elif record_type == "расход":
+            total_expense += amount
+            user_stats[username]["expense"] += amount
+
+    total_diff = total_income - total_expense
+
+    for username, stats in user_stats.items():
+        stats["diff"] = stats["income"] - stats["expense"]
+
+    return {
+        "total": {
+            "income": total_income,
+            "expense": total_expense,
+            "diff": total_diff
+        },
+        "users": user_stats
+    }
