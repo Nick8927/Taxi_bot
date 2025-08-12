@@ -38,7 +38,7 @@ def reply_report_menu():
     builder = ReplyKeyboardBuilder()
     builder.button(text="📅 Текущий день")
     builder.button(text="🗓 За месяц")
-    builder.button(text="⬅️ Назад")
+    builder.button(text="⬅ Назад")
     builder.adjust(1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
 

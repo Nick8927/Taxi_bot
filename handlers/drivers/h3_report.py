@@ -96,7 +96,7 @@ async def handle_month_report(message: Message):
     )
 
 
-@router.message(F.text == "⬅️ Назад")
+@router.message(F.text == "⬅ Назад")
 async def handle_back_to_main(message: Message, state: FSMContext):
     """возврат в главное меню"""
     await state.clear()
