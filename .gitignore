@@ -23,3 +23,6 @@ logs/
 
 services/
 test_access.py
+
+# ▶ xlsx
+*.xlsx
