@@ -1,17 +1,15 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from keyboards.reply import reply_income_menu
+from keyboards.reply import reply_income_menu, back_button_kb
 from services.google_sheets import add_record
-
 
 router = Router()
 
 
 class IncomeStates(StatesGroup):
-    """выбор типа дохода"""
     choosing_type = State()
     waiting_for_amount = State()
     waiting_for_comment = State()
@@ -19,46 +17,48 @@ class IncomeStates(StatesGroup):
 
 @router.message(F.text == "💰 Доход")
 async def show_income_menu(message: Message, state: FSMContext):
-    """показ меню для регистрации дохода"""
+    """Показ меню для регистрации дохода"""
     await message.answer("Выберите тип дохода:", reply_markup=reply_income_menu())
     await state.set_state(IncomeStates.choosing_type)
 
 
 @router.message(IncomeStates.choosing_type, F.text.in_(["Оплата за заказ", "Доплата по заказу"]))
 async def ask_income_amount(message: Message, state: FSMContext):
-    """запрос суммы дохода"""
+    """Запрос суммы дохода"""
     await state.update_data(income_type=message.text)
-    await message.answer("Введите сумму:", reply_markup=ReplyKeyboardRemove())
+    await message.answer("Введите сумму:", reply_markup=back_button_kb())
     await state.set_state(IncomeStates.waiting_for_amount)
 
 
 @router.message(IncomeStates.waiting_for_amount)
 async def ask_income_comment(message: Message, state: FSMContext):
-    """запрос комментария"""
+    """Запрос комментария"""
+    if message.text == "Назад ⬅":
+        await state.set_state(IncomeStates.choosing_type)
+        await message.answer("Выберите тип дохода:", reply_markup=reply_income_menu())
+        return
+
     try:
         amount = float(message.text.replace(",", "."))
     except ValueError:
-        await message.answer("Пожалуйста, введите корректную сумму.")
+        await message.answer("❌ Введите корректную сумму или нажмите 'Назад ⬅'.")
         return
 
     await state.update_data(amount=amount)
-    await message.answer("Добавьте комментарий (например адрес: Гоголя 17)")
+    await message.answer("Добавьте комментарий (например: Гоголя 17)", reply_markup=back_button_kb())
     await state.set_state(IncomeStates.waiting_for_comment)
 
 
 @router.message(IncomeStates.waiting_for_comment)
 async def confirm_income(message: Message, state: FSMContext):
-    """подтверждение дохода"""
+    """Подтверждение дохода"""
     user_data = await state.get_data()
-    comment = message.text
 
     income_type = user_data['income_type']
     amount = user_data['amount']
+    comment = message.text
 
-    if income_type == "Оплата за заказ":
-        subcategory = "оплата"
-    else:
-        subcategory = "доплата"
+    subcategory = "оплата" if income_type == "Оплата за заказ" else "доплата"
 
     add_record(
         user_id=message.from_user.id,
@@ -73,6 +73,14 @@ async def confirm_income(message: Message, state: FSMContext):
         f"✅ Доход зарегистрирован:\n"
         f"Тип: {income_type}\n"
         f"Сумма: {amount:.2f} ₽\n"
-        f"Комментарий: {comment}"
+        f"Комментарий: {comment}",
+        reply_markup=reply_income_menu()
     )
     await state.clear()
+
+
+@router.message(F.text == "Назад ⬅")
+async def go_back(message: Message, state: FSMContext):
+    """Возврат в главное меню дохода"""
+    await state.clear()
+    await message.answer("Возврат в меню ", reply_markup=reply_income_menu())
