@@ -24,7 +24,7 @@ def reply_admin_menu():
     return builder.as_markup(resize_keyboard=True)
 
 
-def income_menu():
+def reply_income_menu():
     """клавиатура для оплаты заказа"""
     builder = ReplyKeyboardBuilder()
     builder.button(text="Оплата за заказ")
@@ -38,7 +38,7 @@ def reply_report_menu():
     builder = ReplyKeyboardBuilder()
     builder.button(text="📅 Текущий день")
     builder.button(text="🗓 За месяц")
-    builder.button(text="⬅️ Назад")
+    builder.button(text="⬅ Назад")
     builder.adjust(1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
 
@@ -51,6 +51,19 @@ def reply_admin_report_menu():
             [KeyboardButton(text="🗓 Этот месяц")],
             [KeyboardButton(text="♾ Всё время")],
             [KeyboardButton(text="⬅️ Назад")],
+        ],
+        resize_keyboard=True
+    )
+
+
+def reply_export_period_keyboard():
+    """клавиатура выбора периода для выгрузки (админ)"""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="📅 За день")],
+            [KeyboardButton(text="🗓 За месяц")],
+            [KeyboardButton(text="♾ За всё время")],
+            [KeyboardButton(text="⬅️ Назад")]
         ],
         resize_keyboard=True
     )

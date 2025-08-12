@@ -3,7 +3,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from keyboards.reply import income_menu
+from keyboards.reply import reply_income_menu
 from services.google_sheets import add_record
 
 
@@ -20,7 +20,7 @@ class IncomeStates(StatesGroup):
 @router.message(F.text == "💰 Доход")
 async def show_income_menu(message: Message, state: FSMContext):
     """показ меню для регистрации дохода"""
-    await message.answer("Выберите тип дохода:", reply_markup=income_menu())
+    await message.answer("Выберите тип дохода:", reply_markup=reply_income_menu())
     await state.set_state(IncomeStates.choosing_type)
 
 
