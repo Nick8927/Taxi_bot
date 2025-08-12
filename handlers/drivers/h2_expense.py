@@ -1,10 +1,10 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+from keyboards.reply import reply_income_menu, back_button_kb
 from services.google_sheets import add_record
-
 
 router = Router()
 
@@ -19,10 +19,20 @@ async def expense_start(message: Message, state: FSMContext):
     """начало ввода расхода"""
     await message.answer(
         "Введите сумму и комментарий (через пробел):\nНапример:\n`150 мойка машины`",
-        reply_markup=ReplyKeyboardRemove(),
+        reply_markup=back_button_kb(),
         parse_mode="Markdown"
     )
     await state.set_state(ExpenseStates.waiting_for_amount_and_comment)
+
+
+@router.message(F.text == "Назад ⬅", ExpenseStates.waiting_for_amount_and_comment)
+async def expense_back(message: Message, state: FSMContext):
+    """возврат в главное меню водителя"""
+    await state.clear()
+    await message.answer(
+        "Возврат в главное меню 🚖",
+        reply_markup=reply_income_menu()
+    )
 
 
 @router.message(ExpenseStates.waiting_for_amount_and_comment)
@@ -30,7 +40,6 @@ async def expense_received(message: Message, state: FSMContext):
     """получение суммы и комментария"""
     text = message.text.strip()
     parts = text.split(" ", 1)
-
 
     try:
         amount = float(parts[0].replace(",", "."))
@@ -50,3 +59,5 @@ async def expense_received(message: Message, state: FSMContext):
 
     except ValueError:
         await message.answer("❌ Неверный формат. Повторите ввод: `150 мойка машины`")
+
+
