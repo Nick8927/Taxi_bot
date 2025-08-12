@@ -160,3 +160,8 @@ def get_admin_summary(period: str):
     lines.append(f"Разница: {total_income - total_expense:.2f} ₽")
 
     return "\n".join(lines) if lines else "Нет данных за выбранный период."
+
+
+def get_all_data():
+    """Чтение всех данных из таблицы"""
+    return sheet.get_all_values()
