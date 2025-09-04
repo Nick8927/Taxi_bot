@@ -26,7 +26,9 @@ async def show_income_menu(message: Message, state: FSMContext):
 async def ask_income_amount(message: Message, state: FSMContext):
     """Запрос суммы дохода"""
     await state.update_data(income_type=message.text)
-    await message.answer("Введите сумму:", reply_markup=back_button_kb())
+    await message.answer("Введите сумму числом,🧾 например :\n 4.50",
+                         parse_mode="Markdown",
+                         reply_markup=back_button_kb())
     await state.set_state(IncomeStates.waiting_for_amount)
 
 
