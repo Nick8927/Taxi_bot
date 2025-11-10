@@ -12,16 +12,8 @@
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
     }
-    h2 {
-      text-align: center;
-      color: var(--tg-theme-text-color);
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
+    h2 { text-align: center; }
+    form { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
     input, select, button {
       padding: 10px;
       font-size: 16px;
@@ -72,14 +64,23 @@
     document.getElementById("record-form").addEventListener("submit", (e) => {
       e.preventDefault();
 
+      const amountValue = parseFloat(document.getElementById("amount").value);
+      if (isNaN(amountValue) || amountValue <= 0) {
+        alert("Введите корректную сумму!");
+        return;
+      }
+
       const data = {
         record_type: document.getElementById("record_type").value,
         subcategory: document.getElementById("subcategory").value,
-        amount: parseFloat(document.getElementById("amount").value),
-        comment: document.getElementById("comment").value
+        amount: amountValue,
+        comment: document.getElementById("comment").value || "-"
       };
 
+
       tg.sendData(JSON.stringify(data));
+
+
       tg.close();
     });
   </script>

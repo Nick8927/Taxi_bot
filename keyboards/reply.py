@@ -8,7 +8,7 @@ def reply_drive_menu():
     builder.button(text="💰 Доход")
     builder.button(text="💸 Расход")
 
-    webapp_url = "https://programme-kurt-surgeon-argued.trycloudflare.com"
+    webapp_url = "https://programme-kurt-surgeon-argued.trycloudflare.com/index.html"
 
     builder.button(
         text="🧾 Внести через форму",
