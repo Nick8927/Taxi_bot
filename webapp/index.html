@@ -4,19 +4,84 @@
   <meta charset="UTF-8">
   <title>Taxi0708 Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+    }
+    h2 {
+      text-align: center;
+      color: var(--tg-theme-text-color);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 8px;
+      background: var(--tg-theme-secondary-bg-color);
+      color: var(--tg-theme-text-color);
+    }
+    button {
+      background: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+      font-weight: 600;
+    }
+  </style>
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
+<body>
   <h2>🚕 Taxi0708</h2>
-  <p>тестовая история мини-апп.</p>
-  <button id="send">Отправить данные боту</button>
+  <p>Добавь запись о доходе или расходе:</p>
+
+  <form id="record-form">
+    <label>Тип записи:</label>
+    <select id="record_type">
+      <option value="доход">Доход</option>
+      <option value="расход">Расход</option>
+    </select>
+
+    <label>Подкатегория:</label>
+    <select id="subcategory">
+      <option value="оплата">Оплата за заказ</option>
+      <option value="доплата">Доплата по заказу</option>
+      <option value="топливо">Топливо</option>
+      <option value="мойка">Мойка</option>
+    </select>
+
+    <label>Сумма:</label>
+    <input type="number" id="amount" step="0.01" required>
+
+    <label>Комментарий:</label>
+    <input type="text" id="comment" placeholder="например: Гоголя 17">
+
+    <button type="submit">Отправить</button>
+  </form>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    document.getElementById("send").onclick = () => {
-      tg.sendData(JSON.stringify({msg: "Привет от Mini App!"}));
-    };
+    document.getElementById("record-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const data = {
+        record_type: document.getElementById("record_type").value,
+        subcategory: document.getElementById("subcategory").value,
+        amount: parseFloat(document.getElementById("amount").value),
+        comment: document.getElementById("comment").value
+      };
+
+      tg.sendData(JSON.stringify(data));
+      tg.close();
+    });
   </script>
 </body>
 </html>
