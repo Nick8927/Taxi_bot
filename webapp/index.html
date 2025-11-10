@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Taxi0708 Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+  <h2>🚕 Taxi0708</h2>
+  <p>тестовая история мини-апп.</p>
+  <button id="send">Отправить данные боту</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    document.getElementById("send").onclick = () => {
+      tg.sendData(JSON.stringify({msg: "Привет от Mini App!"}));
+    };
+  </script>
+</body>
+</html>
