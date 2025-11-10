@@ -143,3 +143,109 @@ C:\cloudflared\cloudflared-windows-amd64.exe tunnel run taxi_tunnel
 * Для продакшена используем именованный туннель с постоянным поддоменом.
 * Все настройки HTTPS и проксирования обрабатывает Cloudflare автоматически.
 * Локальный сервер (`python -m http.server`) должен быть запущен при открытии Mini App.
+
+
+
+
+# Настройка Telegram Mini App с использованием Cloudflare Quick Tunnel (постоянно меняется ссылка)
+
+
+---
+
+## 1. Подготовка проекта
+
+1. Убедитесь, что ваш бот работает локально.
+2. В папке проекта (`C:\Taxi_bot`) должна быть папка `webapp`, где хранится ваш `index.html` (или другой фронтенд для мини-приложения).
+3. Убедитесь, что Python установлен и активирована виртуальная среда (`venv`).
+
+Пример запуска локального сервера:
+
+```powershell
+cd C:\Taxi_bot\webapp
+python -m http.server 8000
+```
+
+Откройте в браузере: [http://localhost:8000](http://localhost:8000) и убедитесь, что страница загружается.
+
+---
+
+## 2. Установка Cloudflared
+
+1. Скачайте последнюю версию для Windows: [cloudflared-windows-amd64](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation) (если ссылка недоступна, скачайте с официального сайта Cloudflare).
+2. Распакуйте в папку, например `C:\cloudflared`
+3. Проверьте работоспособность:
+
+```cmd
+C:\cloudflared\cloudflared-windows-amd64.exe version
+```
+
+---
+
+## 3. Запуск Quick Tunnel
+
+1. В командной строке откройте папку с cloudflared:
+
+```cmd
+cd C:\cloudflared
+```
+
+2. Запустите Quick Tunnel, указывая URL вашего локального сервера:
+
+```cmd
+cloudflared-windows-amd64.exe tunnel --url http://localhost:8000
+```
+
+3. После запуска в консоли появится строка с публичным URL, например:
+
+```
+https://structured-commands-corresponding-implied.trycloudflare.com
+```
+
+> Этот URL меняется при каждом новом запуске Quick Tunnel.
+
+4. Откройте URL в браузере, убедитесь, что открывается ваша локальная страница.
+
+---
+
+## 4. Настройка Mini App в Telegram BotFather
+
+1. Откройте BotFather и выберите вашего бота.
+2. В настройках бота найдите `Mini Apps` → `Main App URL`.
+3. Вставьте URL Quick Tunnel, полученный на шаге 3.
+4. Сохраните настройки.
+
+> ⚠️ При каждом перезапуске Quick Tunnel нужно обновлять URL в BotFather.
+
+---
+
+## 5. Перезапуск проекта
+
+1. Остановите текущий локальный сервер и tunnel.
+2. Запустите сервер снова:
+
+```powershell
+cd C:\Taxi_bot\webapp
+python -m http.server 8000
+```
+
+3. Запустите Quick Tunnel снова:
+
+```cmd
+cd C:\cloudflared
+cloudflared-windows-amd64.exe tunnel --url http://localhost:8000
+```
+
+4. Скопируйте новый URL и обновите его в BotFather (`Mini Apps → Main App URL`).
+
+---
+
+## 6. Разработка Mini App
+
+* Теперь ваш мини-приложение доступно через Telegram, при нажатии кнопки `Open` слева в чате бота.
+* Можно писать фронтенд-логику на HTML/JS/CSS, обновлять файлы в `webapp`, перезапускать сервер и tunnel.
+
+> ⚠️ Помните: Quick Tunnel предназначен только для разработки и тестирования, для продакшн нужно создавать постоянный Tunnel через Cloudflare с аккаунтом.
+
+---
+
+**Конец инструкции.**
