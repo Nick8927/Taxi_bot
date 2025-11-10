@@ -3,14 +3,18 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
 def reply_drive_menu():
-    """клавиатура для водителя с учетом мини-приложения """
+    """Клавиатура для водителя с учетом мини-приложения"""
     builder = ReplyKeyboardBuilder()
     builder.button(text="💰 Доход")
     builder.button(text="💸 Расход")
+
+    webapp_url = "https://programme-kurt-surgeon-argued.trycloudflare.com/index.html"
+
     builder.button(
         text="🧾 Внести через форму",
-        web_app=WebAppInfo(url="https://your-miniapp-url/index.html")
+        web_app=WebAppInfo(url=webapp_url)
     )
+
     builder.button(text="📊 Отчёт")
     builder.adjust(1, 1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
