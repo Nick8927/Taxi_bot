@@ -12,6 +12,7 @@ __pycache__/
 
 # ▶ Md
 *.md
+!todo_miniapp.md
 
 *.jpg
 
