@@ -1,14 +1,18 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
 def reply_drive_menu():
-    """клавиатура для водителя"""
+    """клавиатура для водителя с учетом мини-приложения """
     builder = ReplyKeyboardBuilder()
     builder.button(text="💰 Доход")
     builder.button(text="💸 Расход")
+    builder.button(
+        text="🧾 Внести через форму",
+        web_app=WebAppInfo(url="https://your-miniapp-url/index.html")
+    )
     builder.button(text="📊 Отчёт")
-    builder.adjust(1, 1, 1)
+    builder.adjust(1, 1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
 
 
