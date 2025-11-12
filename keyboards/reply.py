@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -85,13 +85,3 @@ def back_button_kb():
     return builder.as_markup(resize_keyboard=True)
 
 
-def inline_pay_button(amount: float, url: str):
-    """
-    Возвращает InlineKeyboardMarkup с одной кнопкой оплаты.
-    """
-
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=f"💳 Оплатить {amount:.0f} ₽", url=url)]
-        ]
-    )
